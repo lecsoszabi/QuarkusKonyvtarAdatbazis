@@ -30,43 +30,52 @@ public class RentalResource {
     @POST
     @Path("/rent")
     @Transactional
-    public Response rentBook(@QueryParam("bookId") Integer bookId,
-                             @QueryParam("userId") Integer userId,
-                             @QueryParam("quantity") Integer quantity) {
-        // Ellenőrizzük, hogy a könyv és a felhasználó létezik-e
-        Book book = Book.findById(bookId);
-        User user = User.findById(userId);
+    @Consumes(MediaType.APPLICATION_JSON) // A JSON formátum elfogadása
+    public Response rentBook(RentalRequest rentalRequest) {
+        Integer bookId = rentalRequest.getBookId();
+        Integer userId = rentalRequest.getUserId();
+        Integer quantity = rentalRequest.getQuantity();
 
-        if (book == null || user == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid book or user ID").build();
+        if (bookId == null || userId == null || quantity == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing parameters").build();
         }
 
-        // Ellenőrizzük, hogy van-e elég példány a könyvből
+        Book book = Book.findById(bookId);
+        if (book == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Book not found").build();
+        }
+
+        User user = User.findById(userId);
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        }
+
         if (book.getQuantity() < quantity) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Not enough books available").build();
         }
 
-        // Frissítjük a könyv darabszámát
-        book.setQuantity(book.getQuantity() - quantity);
-        book.persist();
-
-        // Létrehozzuk a kölcsönzést
         Rental rental = new Rental();
         rental.setBookId(bookId);
         rental.setUserId(userId);
         rental.setQuantity(quantity);
         rental.setTakenOutAt(LocalDateTime.now());
 
+        book.setQuantity(book.getQuantity() - quantity);
+
         rental.persist();
+        book.persist();
 
         return Response.status(Response.Status.CREATED).entity(rental).build();
     }
+
+
 
     // Könyv visszahozása
     @POST
     @Path("/return/{rentalId}")
     @Transactional
     public Response returnBook(@PathParam("rentalId") Integer rentalId) {
+        // Kölcsönzés keresése ID alapján
         Rental rental = Rental.findById(rentalId);
 
         if (rental == null) {
@@ -84,11 +93,12 @@ public class RentalResource {
         Book book = Book.findById(rental.getBookId());
         if (book != null) {
             book.setQuantity(book.getQuantity() + rental.getQuantity());
-            book.persist(); // Ez biztosítja, hogy az adatbázis frissüljön
+            book.persist(); // Könyv frissítése az adatbázisban
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Book not found for this rental").build();
         }
 
-        rental.persist();
-
+        // A meglévő kölcsönzés frissítése (nem hozunk létre újat!)
         return Response.ok(rental).build();
     }
 
