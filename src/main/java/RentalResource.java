@@ -15,6 +15,12 @@ public class RentalResource {
     public List<Rental> listAll() {
         return Rental.listAll();
     }
+    @GET
+    @Path("/rentals")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Rental> listAllRentals() {
+        return Rental.listAll();
+    }
 
     @GET
     @Path("/{id}")
@@ -30,7 +36,7 @@ public class RentalResource {
     @POST
     @Path("/rent")
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON) // A JSON formátum elfogadása
+    @Consumes(MediaType.APPLICATION_JSON) //JSON formátum
     public Response rentBook(RentalRequest rentalRequest) {
         Integer bookId = rentalRequest.getBookId();
         Integer userId = rentalRequest.getUserId();

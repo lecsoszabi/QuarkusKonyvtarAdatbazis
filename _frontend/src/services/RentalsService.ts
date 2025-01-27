@@ -2,13 +2,13 @@ import api from './api';
 
 // Kölcsönzés típus definiálása
 export interface Rental {
-  id?: number;
-  bookId: number;
-  userId: number;
-  quantity: number;
-  takenOutAt?: string;
-  broughtBackAt?: string | null;
-}
+    id: number;
+    bookId: number;
+    userId: number;
+    quantity: number;
+    takenOutAt: string; // A kivétel dátuma mindig string
+    broughtBackAt: string | null; // A visszahozás dátuma lehet string vagy null
+  }
 
 
 export const rentBook = async (rentalData: { bookId: number; userId: number; quantity: number }) => {
@@ -24,9 +24,9 @@ export const rentBook = async (rentalData: { bookId: number; userId: number; qua
 export const returnBook = async (rentalId: number): Promise<void> => {
     await api.post(`/rentals/return/${rentalId}`);
   };
+ 
+  export const getRentals = async (): Promise<Rental[]> => {
+    const response = await api.get<Rental[]>('/rentals');
+    return response.data;
+  };
   
-// Kölcsönzések lekérdezése
-export const getRentals = async (): Promise<Rental[]> => {
-  const response = await api.get<Rental[]>('/rentals');
-  return response.data;
-};
