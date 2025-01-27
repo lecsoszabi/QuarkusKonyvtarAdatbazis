@@ -1,0 +1,56 @@
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.transaction.Transactional;
+
+@Path("/books")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class BookResource {
+
+    @GET
+    @Path("/{id}")
+    public Response getBookById(@PathParam("id") Integer id) {
+        Book book = Book.findById(id);
+        if (book == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Book not found").build();
+        }
+        return Response.ok(book).build();
+    }
+
+    @POST
+    @Transactional
+    public Response addBook(Book book) {
+        book.persist();
+        return Response.status(Response.Status.CREATED).entity(book).build();
+    }
+
+
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response updateBook(@PathParam("id") Integer id, Book updatedBook) {
+        Book book = Book.findById(id);
+        if (book == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        book.setTitle(updatedBook.getTitle());
+        book.setAuthor(updatedBook.getAuthor());
+        book.setQuantity(updatedBook.getQuantity());
+        return Response.ok(book).build();
+    }
+
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response deleteBook(@PathParam("id") Integer id) {
+        Book book = Book.findById(id);
+        if (book == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        book.delete();
+        return Response.noContent().build();
+    }
+}
+
