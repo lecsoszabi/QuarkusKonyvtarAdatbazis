@@ -3,10 +3,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 @Path("/books")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookResource {
+
+    @GET
+    public List<Book> listAllBooks() {
+        return Book.listAll();
+    }
 
     @GET
     @Path("/{id}")
