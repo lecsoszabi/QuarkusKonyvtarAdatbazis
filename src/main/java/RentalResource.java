@@ -16,6 +16,16 @@ public class RentalResource {
         return Rental.listAll();
     }
 
+    @GET
+    @Path("/{id}")
+    public Response getRentalById(@PathParam("id") Integer id) {
+        Rental rental = Rental.findById(id);
+        if (rental == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Rental not found").build();
+        }
+        return Response.ok(rental).build();
+    }
+
     // Könyv kölcsönzése
     @POST
     @Path("/rent")
