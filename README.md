@@ -213,6 +213,6 @@ public Response updateRental(@PathParam("id") Integer id, Rental updatedRental) 
 ---
 
 ### Képernyőkép:
-
+![image](https://github.com/user-attachments/assets/d81d1b09-6a33-4ea4-b8b7-5db44c9878b7)
 ---
 Ezzel az alkalmazás teljes körűen működik.
