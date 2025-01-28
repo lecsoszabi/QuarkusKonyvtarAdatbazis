@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUsers, deleteUser, editUser, User } from '../services/UserService';
+import { getUsers, deleteUser, User } from '../services/UserService';
 import EditUserForm from './EditUserForm';
 
 const UsersList: React.FC = () => {

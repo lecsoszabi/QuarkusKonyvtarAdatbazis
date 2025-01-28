@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { editBook, Book } from '../services/BooksService';
 
 interface Props {
   book: Book;
-  onSave: () => void;
+  onSave: (updatedBook: Book) => void; // A callback fogadja a frissített adatokat
 }
 
 const EditBookForm: React.FC<Props> = ({ book, onSave }) => {
   const [title, setTitle] = useState(book.title);
   const [author, setAuthor] = useState(book.author);
   const [quantity, setQuantity] = useState(book.quantity);
+
+  // Figyeljük a "book" prop változását, és frissítjük az állapotot
+  useEffect(() => {
+    setTitle(book.title);
+    setAuthor(book.author);
+    setQuantity(book.quantity);
+  }, [book]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,9 +25,9 @@ const EditBookForm: React.FC<Props> = ({ book, onSave }) => {
       return;
     }
     try {
-      const updatedBook = { ...book, title, author, quantity };
-      await editBook(book.id, updatedBook);
-      onSave(); // Hívjuk meg a mentés utáni callbacket
+      const updatedBook = { ...book, title, author, quantity }; // Frissített adatok
+      await editBook(book.id, updatedBook); // Küldjük el az Axios hívást
+      onSave(updatedBook); // Visszaadjuk a frissített adatokat a szülő komponensnek
     } catch (error) {
       console.error('Hiba történt a könyv frissítése során:', error);
     }

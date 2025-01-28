@@ -29,4 +29,9 @@ export const returnBook = async (rentalId: number): Promise<void> => {
     const response = await api.get<Rental[]>('/rentals');
     return response.data;
   };
+
+  export const editRental = async (id: number, updatedRental: Rental): Promise<Rental> => {
+    const response = await api.put(`/rentals/${id}`, updatedRental);
+    return response.data;
+  };
   

@@ -111,4 +111,30 @@ public class RentalResource {
         return Response.ok(rental).build();
     }
 
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response updateRental(@PathParam("id") Integer id, Rental updatedRental) {
+        Rental rental = Rental.findById(id);
+        if (rental == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Rental not found").build();
+        }
+
+        if (updatedRental.getQuantity() == null || updatedRental.getTakenOutAt() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing required fields").build();
+        }
+
+        rental.setQuantity(updatedRental.getQuantity());
+        rental.setTakenOutAt(updatedRental.getTakenOutAt());
+        // Csak akkor frissítjük a visszahozás dátumát, ha az nem null
+        if (updatedRental.getBroughtBackAt() != null) {
+            rental.setBroughtBackAt(updatedRental.getBroughtBackAt());
+        }
+
+        rental.persist();
+
+        return Response.ok(rental).build();
+    }
+
+
 }

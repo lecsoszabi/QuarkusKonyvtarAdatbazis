@@ -63,6 +63,9 @@ h1,h2{
   color: white;
   border: none;
 }
+.listBook button:hover {
+  background-color: #0056b3; /* Sötétebb kék hover */
+}
 
 .listBook th, .listBook td {
   border: 1px solid #444444; /* Szürke szegély */
@@ -127,7 +130,15 @@ h1,h2{
 .rentalsList tr:nth-child(even) {
   background-color: #2e2e2e; /* Világosabb sötétszürke sorok */
 }
-
+.rentalsList button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Kék gomb */
+  color: white;
+  border: none;
+}
+.rentalsList button:hover {
+  background-color: #0056b3; /* Sötétebb kék hover */
+}
 
 /* Visszahozás */
 .returnBook {
