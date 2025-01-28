@@ -12,15 +12,30 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
+
+button {
+  padding: 5px 10px;
+  margin-right: 5px; /* Távolságot adunk a gombok között */
+}
+
 h1,h2{
   margin: 20px auto;
   text-align: center;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
 }
 
 /* Könyv hozzáadása */

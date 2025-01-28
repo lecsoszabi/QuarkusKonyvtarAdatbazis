@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EditBookForm from './EditBookForm';
-import { Book, getBooks } from '../services/BooksService';
+import { Book, deleteBook, getBooks } from '../services/BooksService';
 
 const BooksList: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -26,6 +26,15 @@ const BooksList: React.FC = () => {
     setEditingBook(null); // Szerkesztési mód bezárása
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteBook(id); // Könyv törlése backendből
+      setBooks(books.filter((book) => book.id !== id)); // Állapot frissítése
+    } catch (error) {
+      console.error('Hiba történt a könyv törlésekor:', error);
+    }
+  };
+
   return (
     <div>
       <h2>Könyvek</h2>
@@ -48,6 +57,7 @@ const BooksList: React.FC = () => {
               <td>{book.quantity}</td>
               <td>
                 <button onClick={() => setEditingBook(book)}>Szerkesztés</button>
+                <button onClick={() => handleDelete(book.id!)}>Törlés</button>
               </td>
             </tr>
           ))}

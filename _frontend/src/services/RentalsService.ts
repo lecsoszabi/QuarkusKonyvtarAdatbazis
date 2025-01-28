@@ -35,3 +35,8 @@ export const returnBook = async (rentalId: number): Promise<void> => {
     return response.data;
   };
   
+  export const deleteRental = async (id: number): Promise<void> => {
+    await api.delete(`/rentals/${id}`);
+  };
+  
+  

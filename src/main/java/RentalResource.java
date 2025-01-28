@@ -136,5 +136,15 @@ public class RentalResource {
         return Response.ok(rental).build();
     }
 
-
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response deleteRental(@PathParam("id") Integer id) {
+        Rental rental = Rental.findById(id);
+        if (rental == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Rental not found").build();
+        }
+        rental.delete();
+        return Response.noContent().build(); // 204 No Content válasz
+    }
 }

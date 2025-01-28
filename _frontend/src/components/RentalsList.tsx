@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getRentals, editRental, Rental } from '../services/RentalsService';
+import { getRentals, editRental, Rental, deleteRental } from '../services/RentalsService';
 import EditRentalForm from './EditRentalForm';
 
 const RentalsList: React.FC = () => {
@@ -28,6 +28,14 @@ const RentalsList: React.FC = () => {
       console.error('Hiba történt a kölcsönzés frissítése során:', error);
     }
   };
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteRental(id); // Kölcsönzés törlése backendből
+      setRentals(rentals.filter((rental) => rental.id !== id)); // Állapot frissítése
+    } catch (error) {
+      console.error('Hiba történt a kölcsönzés törlésekor:', error);
+    }
+  };
 
   return (
     <div>
@@ -41,7 +49,7 @@ const RentalsList: React.FC = () => {
             <th>Darabszám</th>
             <th>Kivétel Dátuma</th>
             <th>Visszavitel Dátuma</th>
-            <th>Műveletek</th> {/* Új oszlop a műveletekhez */}
+            <th>Műveletek</th>
           </tr>
         </thead>
         <tbody>
@@ -74,6 +82,7 @@ const RentalsList: React.FC = () => {
               {/* Szerkesztés gomb hozzáadása */}
               <td>
                 <button onClick={() => setEditingRental(rental)}>Szerkesztés</button>
+                <button onClick={() => handleDelete(rental.id!)}>Törlés</button>
               </td>
             </tr>
           ))}

@@ -21,22 +21,18 @@ const UsersList: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteUser(id);
-      setUsers(users.filter((user) => user.id !== id)); // Törölt felhasználó eltávolítása
+      await deleteUser(id); // Felhasználó törlése backendből
+      setUsers(users.filter((user) => user.id !== id)); // Állapot frissítése
     } catch (error) {
       console.error('Hiba történt a felhasználó törlésekor:', error);
     }
   };
 
-  const handleUpdate = async (updatedUser: User) => {
-    try {
-      setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user))); // Frissítjük az állapotot
-      setEditingUser(null); // Bezárjuk a szerkesztési formot
-    } catch (error) {
-      console.error('Hiba történt a felhasználó frissítése során:', error);
-    }
+  const handleUpdate = (updatedUser: User) => {
+    setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user))); // Frissítjük az állapotot
+    setEditingUser(null); // Bezárjuk a szerkesztési formot
   };
-  
+
   return (
     <div>
       <h2>Felhasználók</h2>
@@ -50,20 +46,23 @@ const UsersList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.address}</td>
-              <td>
-                <button onClick={() => handleDelete(user.id!)}>Törlés</button>
-                <button onClick={() => setEditingUser(user)}>Szerkesztés</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {users.map((user) => (
+    <tr key={user.id}>
+      <td>{user.id}</td>
+      <td>{user.name}</td>
+      <td>{user.address}</td>
+      <td>
+        {/* Törlés gomb */}
+        <button onClick={() => handleDelete(user.id!)}>Törlés</button>
+
+        {/* Szerkesztés gomb */}
+        <button onClick={() => setEditingUser(user)}>Szerkesztés</button>
+      </td>
+    </tr>
+  ))}
+</tbody>
       </table>
-  
+
       {/* Szerkesztési form megjelenítése */}
       {editingUser && (
         <EditUserForm user={editingUser} onSave={handleUpdate} />
@@ -71,4 +70,5 @@ const UsersList: React.FC = () => {
     </div>
   );
 };
+
 export default UsersList;

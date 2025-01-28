@@ -50,9 +50,9 @@ public class UserResource {
     public Response deleteUser(@PathParam("id") Integer id) {
         User user = User.findById(id);
         if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
         }
         user.delete();
-        return Response.noContent().build();
+        return Response.noContent().build(); // 204 No Content válasz
     }
 }
