@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
-import { updateUser } from '../services/UserService';
+import { editUser, User } from '../services/UserService';
 
 interface Props {
-  userId: number;
-  currentName: string;
-  currentAddress: string;
-  onUserUpdated: () => void;
+  user: User;
+  onSave: () => void;
 }
 
-const EditUserForm: React.FC<Props> = ({ userId, currentName, currentAddress, onUserUpdated }) => {
-  const [name, setName] = useState(currentName);
-  const [address, setAddress] = useState(currentAddress);
+const EditUserForm: React.FC<Props> = ({ user, onSave }) => {
+  const [name, setName] = useState(user.name);
+  const [address, setAddress] = useState(user.address);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateUser(userId, { name, address });
-      onUserUpdated();
+      await editUser(user.id, { ...user, name, address });
+      onSave();
     } catch (error) {
       console.error('Hiba történt a felhasználó frissítése során:', error);
     }
@@ -28,12 +26,14 @@ const EditUserForm: React.FC<Props> = ({ userId, currentName, currentAddress, on
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        placeholder="Név"
         required
       />
       <input
         type="text"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
+        placeholder="Cím"
         required
       />
       <button type="submit">Mentés</button>

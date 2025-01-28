@@ -20,12 +20,11 @@ export const addBook = async (book: Book): Promise<Book> => {
   return response.data;
 };
 
-// Könyv frissítése
-export const updateBook = async (id: number, book: Book): Promise<Book> => {
-  const response = await api.put(`/books/${id}`, book);
+// Könyv szerkesztése
+export const editBook = async (id: number, updatedBook: Book): Promise<Book> => {
+  const response = await api.put(`/books/${id}`, updatedBook);
   return response.data;
-};
-
+}; 
 // Könyv törlése
 export const deleteBook = async (id: number): Promise<void> => {
   await api.delete(`/books/${id}`);

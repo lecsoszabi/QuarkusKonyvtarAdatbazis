@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getUsers, deleteUser, User } from '../services/UserService';
+import { getUsers, deleteUser, editUser, User } from '../services/UserService';
+import EditUserForm from './EditUserForm';
 
 const UsersList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -20,12 +22,21 @@ const UsersList: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteUser(id);
-      setUsers(users.filter((user) => user.id !== id));
+      setUsers(users.filter((user) => user.id !== id)); // Törölt felhasználó eltávolítása
     } catch (error) {
       console.error('Hiba történt a felhasználó törlésekor:', error);
     }
   };
 
+  const handleUpdate = async (updatedUser: User) => {
+    try {
+      const response = await editUser(updatedUser.id, updatedUser);
+      setUsers(users.map((user) => (user.id === response.id ? response : user)));
+      setEditingUser(null);
+    } catch (error) {
+      console.error('Hiba történt a felhasználó frissítése során:', error);
+    }
+  };  
   return (
     <div>
       <h2>Felhasználók</h2>
@@ -46,11 +57,17 @@ const UsersList: React.FC = () => {
               <td>{user.address}</td>
               <td>
                 <button onClick={() => handleDelete(user.id)}>Törlés</button>
+                <button onClick={() => setEditingUser(user)}>Szerkesztés</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Szerkesztési form megjelenítése */}
+      {editingUser && (
+        <EditUserForm user={editingUser} onSave={() => handleUpdate(editingUser)} />
+      )}
     </div>
   );
 };

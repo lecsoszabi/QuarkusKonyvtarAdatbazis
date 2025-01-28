@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { rentBook, returnBook } from '../services/RentalsService';
+import { returnBook } from '../services/RentalsService';
 
 interface Props {
     onReturnCompleted: () => void; // A visszahozás után meghívott callback

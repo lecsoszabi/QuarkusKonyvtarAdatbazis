@@ -57,6 +57,12 @@ h1,h2{
   margin: auto;
   border-collapse: collapse;
 }
+.listBook button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Kék gomb */
+  color: white;
+  border: none;
+}
 
 .listBook th, .listBook td {
   border: 1px solid #444444; /* Szürke szegély */

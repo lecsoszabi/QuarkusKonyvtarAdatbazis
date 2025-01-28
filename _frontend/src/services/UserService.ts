@@ -19,9 +19,9 @@ export const addUser = async (user: Omit<User, 'id'>): Promise<User> => {
 };
 
 // Felhasználó frissítése
-export const updateUser = async (id: number, user: Omit<User, 'id'>): Promise<User> => {
-  const response = await api.put<User>(`/users/${id}`, user);
-  return response.data;
+export const editUser = async (id: number, updatedUser: User): Promise<User> => {
+  const response = await api.put(`/users/${id}`, updatedUser);
+  return response.data; // Visszaadjuk a frissített felhasználót
 };
 
 // Felhasználó törlése

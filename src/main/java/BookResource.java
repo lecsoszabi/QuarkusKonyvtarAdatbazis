@@ -34,23 +34,26 @@ public class BookResource {
         book.persist();
         return Response.status(Response.Status.CREATED).entity(book).build();
     }
-
-
     @PUT
     @Path("/{id}")
     @Transactional
     public Response updateBook(@PathParam("id") Integer id, Book updatedBook) {
         Book book = Book.findById(id);
         if (book == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Book not found").build();
         }
-        book.setTitle(updatedBook.getTitle());
-        book.setAuthor(updatedBook.getAuthor());
-        book.setQuantity(updatedBook.getQuantity());
+
+        if (updatedBook.getTitle() == null || updatedBook.getAuthor() == null || updatedBook.getQuantity() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing required fields").build();
+        }
+
+        book.title = updatedBook.title;
+        book.author = updatedBook.author;
+        book.quantity = updatedBook.quantity;
+        book.persist();
+
         return Response.ok(book).build();
     }
-
-
     @DELETE
     @Path("/{id}")
     @Transactional

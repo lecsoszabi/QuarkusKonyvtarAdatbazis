@@ -1,25 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import EditBookForm from './EditBookForm';
 import { Book, getBooks } from '../services/BooksService';
 
-export const BooksList: React.FC = () => {
+const BooksList: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
+  // Könyvek lekérése a backendből
+  const fetchBooks = async () => {
+    try {
+      const data = await getBooks();
+      setBooks(data); // Állapot frissítése
+    } catch (error) {
+      console.error('Hiba történt a könyvek lekérdezésekor:', error);
+    }
+  };
+
+  // Komponens betöltésekor egyszer lefut
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const data = await getBooks();
-        setBooks(data); // Csak egyszer állítsd be az állapotot
-      } catch (error) {
-        console.error('Hiba történt a könyvek lekérdezésekor:', error);
-      }
-    };
-  
     fetchBooks();
   }, []);
 
+  const handleSave = () => {
+    fetchBooks(); // Frissítjük az adatokat mentés után
+    setEditingBook(null); // Szerkesztési mód bezárása
+  };
+
   return (
     <div>
-      <h1>Könyvek</h1>
+      <h2>Könyvek</h2>
       <table>
         <thead>
           <tr>
@@ -27,6 +36,7 @@ export const BooksList: React.FC = () => {
             <th>Cím</th>
             <th>Szerző</th>
             <th>Darabszám</th>
+            <th>Műveletek</th>
           </tr>
         </thead>
         <tbody>
@@ -36,11 +46,20 @@ export const BooksList: React.FC = () => {
               <td>{book.title}</td>
               <td>{book.author}</td>
               <td>{book.quantity}</td>
+              <td>
+                <button onClick={() => setEditingBook(book)}>Szerkesztés</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Szerkesztési form megjelenítése */}
+      {editingBook && (
+        <EditBookForm book={editingBook} onSave={handleSave} />
+      )}
     </div>
   );
 };
+
 export default BooksList;
