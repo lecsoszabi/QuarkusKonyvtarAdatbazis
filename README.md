@@ -208,14 +208,11 @@ public Response updateRental(@PathParam("id") Integer id, Rental updatedRental) 
    ```bash
    ./mvnw quarkus:dev
    ```
+   
 
 ---
 
-## **Tesztelés**
-
-1. Teszteld az API-kat Postman-nel vagy cURL-lel.
-2. Ellenőrizd a frontend működését böngészőben.
+### Képernyőkép:
 
 ---
-
-Ezzel az alkalmazás teljes körűen működik, beleértve a könyvek, felhasználók és kölcsönzések kezelését is! 😊
+Ezzel az alkalmazás teljes körűen működik.
