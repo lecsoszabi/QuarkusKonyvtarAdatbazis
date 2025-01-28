@@ -52,11 +52,11 @@ const UsersList: React.FC = () => {
       <td>{user.name}</td>
       <td>{user.address}</td>
       <td>
-        {/* Törlés gomb */}
-        <button onClick={() => handleDelete(user.id!)}>Törlés</button>
-
         {/* Szerkesztés gomb */}
         <button onClick={() => setEditingUser(user)}>Szerkesztés</button>
+        
+        {/* Törlés gomb */}
+        <button onClick={() => handleDelete(user.id!)}>Törlés</button>
       </td>
     </tr>
   ))}
