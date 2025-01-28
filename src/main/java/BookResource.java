@@ -28,6 +28,9 @@ public class BookResource {
     @POST
     @Transactional
     public Response addBook(Book book) {
+        if (book.quantity <= 0){
+            return Response.status(Response.Status.BAD_REQUEST).entity("0 könyvet nem lehet hozzáadni").build();
+        }
         book.persist();
         return Response.status(Response.Status.CREATED).entity(book).build();
     }

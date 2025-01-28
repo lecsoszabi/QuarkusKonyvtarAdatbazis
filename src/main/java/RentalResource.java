@@ -59,6 +59,9 @@ public class RentalResource {
         if (book.getQuantity() < quantity) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Not enough books available").build();
         }
+        if(quantity <= 0){
+            return Response.status(Response.Status.BAD_REQUEST).entity("0 könyvet nem lehet kölcsönözni").build();
+        }
 
         Rental rental = new Rental();
         rental.setBookId(bookId);

@@ -27,8 +27,6 @@ export const BooksList: React.FC = () => {
             <th>Cím</th>
             <th>Szerző</th>
             <th>Darabszám</th>
-            <th>Kölcsönzés Dátuma</th>
-            <th>Visszavitel Dátuma</th>
           </tr>
         </thead>
         <tbody>
