@@ -30,13 +30,13 @@ const UsersList: React.FC = () => {
 
   const handleUpdate = async (updatedUser: User) => {
     try {
-      const response = await editUser(updatedUser.id, updatedUser);
-      setUsers(users.map((user) => (user.id === response.id ? response : user)));
-      setEditingUser(null);
+      setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user))); // Frissítjük az állapotot
+      setEditingUser(null); // Bezárjuk a szerkesztési formot
     } catch (error) {
       console.error('Hiba történt a felhasználó frissítése során:', error);
     }
-  };  
+  };
+  
   return (
     <div>
       <h2>Felhasználók</h2>
@@ -56,20 +56,19 @@ const UsersList: React.FC = () => {
               <td>{user.name}</td>
               <td>{user.address}</td>
               <td>
-                <button onClick={() => handleDelete(user.id)}>Törlés</button>
+                <button onClick={() => handleDelete(user.id!)}>Törlés</button>
                 <button onClick={() => setEditingUser(user)}>Szerkesztés</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
+  
       {/* Szerkesztési form megjelenítése */}
       {editingUser && (
-        <EditUserForm user={editingUser} onSave={() => handleUpdate(editingUser)} />
+        <EditUserForm user={editingUser} onSave={handleUpdate} />
       )}
     </div>
   );
 };
-
 export default UsersList;
