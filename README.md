@@ -117,7 +117,8 @@ A backend a Quarkus keretrendszerre épül, amely egy könnyű és gyors Java-al
    - POST `/rentals`: Új kölcsönzés létrehozása.
    - PUT `/rentals/{id}`: Kölcsönzés frissítése.
    - DELETE `/rentals/{id}`: Kölcsönzés törlése.
-
+4. Kölcsönzések kezelése (`/books/donations`):
+   - GET `/books/donations`: Az adománykönyvek összegzett adatainak lekérése.
 ---
 
 ### **Backend fájlstruktúra**
@@ -188,9 +189,15 @@ public Response updateRental(@PathParam("id") Integer id, Rental updatedRental) 
     return Response.ok(rental).build();
 }
 ```
-
 ---
 
+#### **Adományozás tesztelése:**
+
+`GET http://localhost:8080/books/simulate-donation`
+
+Ez a teszt azért szükséges hogy ne várjunk este 8 óráig.
+Elhelyeztem egy teszt gombot a frontenden is ezzel a funkcióval.
+---
 ## **Telepítés**
 
 ### Frontend telepítése és futtatása:

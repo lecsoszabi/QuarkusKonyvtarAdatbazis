@@ -233,3 +233,17 @@ h1,h2{
 .listUsers button:hover {
   background-color: #0056b3; /* Sötétebb kék hover */
 }
+.testButton{
+  margin: 20px auto;
+  text-align: center;
+}
+.testButton button{
+  padding: 10px 20px;
+  margin: 20px auto;
+  background-color: #007bff; /* Kék gomb */
+  color: white;
+  border: none;
+}
+.testButton button:hover {
+  background-color: #0056b3; /* Sötétebb kék hover */
+}

@@ -7,13 +7,23 @@ import UsersList from './components/UsersList';
 import AddUserForm from './components/AddUserForm';
 import RentalsList from './components/RentalsList';
 import CountdownTimer from './components/CountdownTimer';
-import { getDonationSummary, BookDonationSummary } from './services/BooksService';
+import { getDonationSummary, BookDonationSummary, simulateDonation } from './services/BooksService';
 
 function App() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1); // Frissíti a listákat
+  };
+
+  const handleSimulateDonation = async () => {
+    try {
+      await simulateDonation(); // Meghívja az adományozási funkciót
+      console.log('Adomány könyvek sikeresen hozzáadva!');
+      handleRefresh(); // Frissíti a könyvek listáját
+    } catch (error) {
+      console.error('Hiba történt az adomány szimuláció során:', error);
+    }
   };
 
   // Adománykönyvek lekérése
@@ -58,6 +68,9 @@ function App() {
         </div>
         <div className="countDown">
           <h2><CountdownTimer /></h2>
+        </div>
+        <div className='testButton'>
+        <button onClick={handleSimulateDonation}>Teszt adományozás</button>
         </div>
       </main>
     </div>

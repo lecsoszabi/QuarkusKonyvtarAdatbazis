@@ -44,3 +44,12 @@ export const getDonationSummary = async (): Promise<BookDonationSummary[]> => {
   return response.json();
 };
 
+export const simulateDonation = async (): Promise<void> => {
+  const response = await fetch('http://localhost:8080/books/simulate-donation', {
+    method: 'GET',
+  });
+  if (!response.ok) {
+    throw new Error(`Hiba történt az adomány szimuláció során: ${response.statusText}`);
+  }
+};
+
