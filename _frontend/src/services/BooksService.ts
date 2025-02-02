@@ -29,3 +29,18 @@ export const editBook = async (id: number, updatedBook: Book): Promise<Book> => 
 export const deleteBook = async (id: number): Promise<void> => {
   await api.delete(`/books/${id}`);
 };
+
+export interface BookDonationSummary {
+  title: string;
+  author: string;
+  quantity: number;
+}
+
+export const getDonationSummary = async (): Promise<BookDonationSummary[]> => {
+  const response = await fetch('http://localhost:8080/books/donations');
+  if (!response.ok) {
+    throw new Error(`Hiba történt az API hívás során: ${response.statusText}`);
+  }
+  return response.json();
+};
+

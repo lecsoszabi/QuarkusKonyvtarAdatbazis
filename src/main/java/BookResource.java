@@ -1,3 +1,4 @@
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -24,16 +25,37 @@ public class BookResource {
         }
         return Response.ok(book).build();
     }
+    //teszt arra hogy 8 orakor feltöltödnek e a konyvek
+
+    @Inject
+    BookDonationScheduler bookDonationScheduler;
+
+    @GET
+    @Path("/simulate-donation")
+    public void simulateDonation() throws InterruptedException {
+        bookDonationScheduler.generateBookDonations();
+    }
+    // ezt
+
+    @Inject
+    BookService bookService; // A service osztály injektálása
+
+    @GET
+    @Path("/donations") // Az adományok összegzéséhez tartozó végpont
+    public List<BookDonationSummary> getDonationSummary() {
+        return bookService.getDonationSummary(); // Meghívja a service metódust
+    }
 
     @POST
     @Transactional
     public Response addBook(Book book) {
-        if (book.quantity <= 0){
+        if (book.quantity <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("0 könyvet nem lehet hozzáadni").build();
         }
         book.persist();
         return Response.status(Response.Status.CREATED).entity(book).build();
     }
+
     @PUT
     @Path("/{id}")
     @Transactional
@@ -54,6 +76,7 @@ public class BookResource {
 
         return Response.ok(book).build();
     }
+
     @DELETE
     @Path("/{id}")
     @Transactional
@@ -65,5 +88,7 @@ public class BookResource {
         book.delete();
         return Response.noContent().build();
     }
+
+
 }
 
