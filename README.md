@@ -220,6 +220,10 @@ Elhelyeztem egy teszt gombot a frontenden is ezzel a funkcióval.
 ---
 
 ### Képernyőkép:
+Régebbi verzió:
 ![image](https://github.com/user-attachments/assets/d81d1b09-6a33-4ea4-b8b7-5db44c9878b7)
+Új verzió:
+![image](https://github.com/user-attachments/assets/538af198-51ab-4618-a8b9-4dfd34003aab)
+
 ---
 Ezzel az alkalmazás teljes körűen működik.
