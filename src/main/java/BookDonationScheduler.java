@@ -1,63 +1,54 @@
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.annotation.PreDestroy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 @ApplicationScoped
 public class BookDonationScheduler {
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     @Inject
     BookService bookService;
 
     @Blocking
-    @Scheduled(cron = "0 0 20 ? * MON-FRI") // Hétköznap este 8 órakor fut
-    public void generateBookDonations() throws InterruptedException {
+    @Scheduled(cron = "0 0 20 ? * MON-FRI")
+    public void generateBookDonations() {
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
-            try (ExecutorService executor = Executors.newFixedThreadPool(4)) {
+        for (int i = 0; i < 4; i++) {
+            futures.add(CompletableFuture.runAsync(() -> {
+                int totalBooks = ThreadLocalRandom.current().nextInt(2000, 4001);
+                List<Book> booksBatch = new ArrayList<>(100);
 
-                List<Runnable> tasks = new ArrayList<>();
+                for (int j = 0; j < totalBooks; j++) {
+                    Book book = new Book();
+                    book.setTitle("Ismeretlen név " + ThreadLocalRandom.current().nextInt(1, 100000));
+                    book.setAuthor("Ismeretlen szerző " + ThreadLocalRandom.current().nextInt(1, 100000));
+                    book.setQuantity(ThreadLocalRandom.current().nextInt(1, 6));
+                    booksBatch.add(book);
 
-                for (int i = 0; i < 4; i++) { // 4 szál indítása
-                    tasks.add(() -> {
-                        int totalBooks = ThreadLocalRandom.current().nextInt(2000, 4001); // 2000-4000 könyv per szál
-                        List<Book> booksBatch = new ArrayList<>();
-
-                        for (int j = 0; j < totalBooks; j++) {
-                            Book book = new Book();
-                            book.setTitle("Ismeretlen név " + ThreadLocalRandom.current().nextInt(1, 100000));
-                            book.setAuthor("Ismeretlen szerző " + ThreadLocalRandom.current().nextInt(1, 100000));
-                            book.setQuantity(ThreadLocalRandom.current().nextInt(1, 6)); // Mennyiség: 1-5
-
-                            booksBatch.add(book);
-
-                            if (booksBatch.size() == 100) { // Tranzakciónként maximum 100 könyv
-                                bookService.saveBooks(new ArrayList<>(booksBatch));
-                                booksBatch.clear();
-                            }
-                        }
-
-                        if (!booksBatch.isEmpty()) { // Maradék könyvek mentése
-                            bookService.saveBooks(booksBatch);
-                        }
-                    });
+                    if (booksBatch.size() == 100) {
+                        bookService.saveBooks(booksBatch);
+                        booksBatch.clear();
+                    }
                 }
 
-                tasks.forEach(executor::execute); // Feladatok futtatása
+                if (!booksBatch.isEmpty()) {
+                    bookService.saveBooks(booksBatch);
+                }
+            }, executor));
+        }
 
-                executor.shutdown();
-                executor.awaitTermination(Long.MAX_VALUE, java.util.concurrent.TimeUnit.MILLISECONDS);
-            } // 4 szál
-        System.out.println("Adomány könyvek sikeresen hozzáadva az adatbázishoz.");
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
-
-
-
+    @PreDestroy
+    void shutdown() {
+        executor.shutdownNow();
+    }
 }

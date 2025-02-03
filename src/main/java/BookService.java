@@ -1,39 +1,30 @@
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class BookService {
 
-    private final Map<String, Integer> bookSummary = new HashMap<>(); // Összegzés tárolása
+    private final ConcurrentHashMap<String, Integer> bookSummary = new ConcurrentHashMap<>();
 
-    // Könyvek mentése és összegzés frissítése
     @Transactional
     public void saveBooks(List<Book> books) {
-        for (Book book : books) {
-            book.persist();
+        // Bulk
+        Book.persist(books);
 
-            // Összegzés frissítése
-            String key = book.title + " - " + book.author;
-            synchronized (bookSummary) {
-                bookSummary.put(key, bookSummary.getOrDefault(key, 0) + book.quantity);
-            }
-        }
+        books.forEach(book -> {
+            String key = book.getTitle() + " - " + book.getAuthor();
+            bookSummary.merge(key, book.getQuantity(), Integer::sum);
+        });
     }
-
-    // Összegzett adatok lekérése
     public List<BookDonationSummary> getDonationSummary() {
-        synchronized (bookSummary) {
-            List<BookDonationSummary> summaryList = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry : bookSummary.entrySet()) {
-                String[] parts = entry.getKey().split(" - ");
-                summaryList.add(new BookDonationSummary(parts[0], parts[1], entry.getValue()));
-            }
-            return summaryList;
-        }
+        return bookSummary.entrySet().stream()
+                .map(e -> {
+                    String[] parts = e.getKey().split(" - ");
+                    return new BookDonationSummary(parts[0], parts[1], e.getValue());
+                })
+                .collect(Collectors.toList());
     }
 }
